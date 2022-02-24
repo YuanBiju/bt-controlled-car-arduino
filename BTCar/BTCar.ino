@@ -1,7 +1,3 @@
-#define RxD 2
-#define TxD 4
-
-const int pin = 9; // Built in LED in Arduino board
 int pos = 0; // Servo pose
 String msg = ""; // Store message in string
 
@@ -19,7 +15,7 @@ String onOff = "off";
 
 
 void setup() {
-  // Initialization
+  // setting PWM output pins for direction and speed control of dc motors
   pinMode(9,OUTPUT);
   pinMode(10,OUTPUT);
   pinMode(5,OUTPUT);
@@ -28,12 +24,18 @@ void setup() {
 }
 
 void loop() {
-  recvWithEndMarker();
-  handleNewData();
-  moveCar();
+  recvWithEndMarker();//  receive and store serial data until /n character 
+//  defined as the endmarker is obtained
+
+  handleNewData();//  handle the serial input until /n character whenever obtained
+//  includes setting the movement control of the bot
+
+  moveCar();//  move the bot based on the controls set
+  
   delay(10);
 }
 
+// handles serial data
 void recvWithEndMarker() {
     static byte ndx = 0;
     char endMarker = '\n';
@@ -65,6 +67,15 @@ void handleNewData() {
   }
 }
 
+
+// here are the commands obtained from android application:
+// 01on
+// 01off
+// 02F
+// 02B
+// 02R
+// 02L
+// 02S
 void commandControl() {
   // Control Servo in Arduino board
   msg = String(receivedChars);
